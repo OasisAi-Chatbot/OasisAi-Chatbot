@@ -30,7 +30,7 @@
 
 ## 📞 Contact
 📱 WhatsApp: [Chat Now](https://wa.me/916291378773)  
-📧 Email: yourname@example.com
+📧 Email:trideepghoshroady@gmail.com
 
 ---
 
