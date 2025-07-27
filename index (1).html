@@ -1,0 +1,421 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Oasis AI - WhatsApp Auto-Reply Assistant
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+   body {
+      font-family: 'Poppins', sans-serif;
+      background: #e0e5ec;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    /* Neumorphism shadows */
+    .neumorph {
+      background: #e0e5ec;
+      box-shadow:
+        8px 8px 15px #a3b1c6,
+        -8px -8px 15px #ffffff;
+      border-radius: 20px;
+    }
+    .neumorph-inset {
+      background: #e0e5ec;
+      box-shadow:
+        inset 8px 8px 15px #a3b1c6,
+        inset -8px -8px 15px #ffffff;
+      border-radius: 20px;
+    }
+    .btn-neumorph {
+      background: #e0e5ec;
+      box-shadow:
+        6px 6px 8px #a3b1c6,
+        -6px -6px 8px #ffffff;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn-neumorph:hover {
+      box-shadow:
+        inset 6px 6px 8px #a3b1c6,
+        inset -6px -6px 8px #ffffff;
+      color: #25d366;
+      font-weight: 700;
+    }
+    /* Soft 3D icon container */
+    .icon-neumorph {
+      background: #e0e5ec;
+      box-shadow:
+        6px 6px 10px #a3b1c6,
+        -6px -6px 10px #ffffff;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #25d366;
+      font-size: 2.2rem;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+    .icon-neumorph:hover {
+      color: #128c4a;
+    }
+    /* Scrollbar hidden for demo section */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Catalogue grid */
+    .catalogue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 2rem;
+    }
+    /* Catalogue card */
+    .catalogue-card {
+      background: #e0e5ec;
+      border-radius: 20px;
+      box-shadow:
+        8px 8px 15px #a3b1c6,
+        -8px -8px 15px #ffffff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+    .catalogue-card:hover {
+      box-shadow:
+        inset 8px 8px 15px #a3b1c6,
+        inset -8px -8px 15px #ffffff;
+    }
+    .catalogue-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    .catalogue-card-content {
+      padding: 1rem 1.25rem 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .catalogue-card-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      user-select: text;
+    }
+    .catalogue-card-desc {
+      color: #4b5563;
+      font-size: 0.95rem;
+      flex-grow: 1;
+      user-select: text;
+    }
+    .catalogue-card-price {
+      margin-top: 1rem;
+      font-weight: 700;
+      color: #16a34a;
+      font-size: 1.1rem;
+      user-select: text;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      #lowest-price-banner {
+        width: 100vw;
+        border-radius: 0;
+        left: 0;
+        transform: none;
+      }
+    }
+    /* Lowest price banner */
+    #lowest-price-banner {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #25d366;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
+      padding: 0.75rem 1.5rem;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      box-shadow:
+        0 -4px 15px rgba(37, 211, 102, 0.6);
+      z-index: 100;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: background-color 0.3s ease;
+      max-width: 100vw;
+      width: fit-content;
+      min-width: 280px;
+    }
+    #lowest-price-banner:hover {
+      background: #128c4a;
+    }
+    #lowest-price-banner i {
+      font-size: 1.5rem;
+    }
+  </style>
+ </head>
+ <body class="text-gray-700">
+  <!-- Lowest Price Banner -->
+  <a aria-label="Get chatbot built for lowest price ₹99 for first order, contact Oasis AI on WhatsApp" href="https://wa.me/916291378773?text=I%20want%20to%20order%20a%20chatbot%20for%20₹99%20first%20order" id="lowest-price-banner" rel="noopener noreferrer" target="_blank" role="banner">
+   <i class="fas fa-tags" aria-hidden="true"></i>
+   Build Any Chatbot for <span class="ml-1">₹99</span> - First Order Only!
+  </a>
+  <!-- Container -->
+  <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12 flex flex-col min-h-screen">
+   <!-- Header / Navbar with logo -->
+   <header class="flex items-center justify-between mb-16">
+    <div class="flex items-center space-x-3">
+     <img alt="Oasis AI logo, stylized letter O with green and white colors, representing a tech and chatbot brand" class="rounded-full neumorph" height="48" src="https://storage.googleapis.com/a1aa/image/334d39b5-d80d-4502-f5f9-6b1c6d7ef735.jpg" width="48"/>
+     <h1 class="text-3xl font-extrabold text-gray-800 select-none">
+      Oasis AI
+     </h1>
+    </div>
+    <nav class="hidden md:flex space-x-8 font-semibold text-gray-600">
+     <a class="hover:text-green-600 transition" href="#features">
+      Features
+     </a>
+     <a class="hover:text-green-600 transition" href="#catalogue">
+      Catalogue
+     </a>
+     <a class="hover:text-green-600 transition" href="#demo">
+      Demo
+     </a>
+     <a class="hover:text-green-600 transition" href="#get-started">
+      Get Started
+     </a>
+    </nav>
+    <button aria-label="Toggle menu" class="md:hidden neumorph p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400" id="mobile-menu-button">
+     <i class="fas fa-bars text-2xl text-gray-600">
+     </i>
+    </button>
+   </header>
+   <!-- Mobile menu -->
+   <nav class="hidden flex-col space-y-4 font-semibold text-gray-600 mb-12" id="mobile-menu">
+    <a class="hover:text-green-600 transition" href="#features">
+     Features
+    </a>
+    <a class="hover:text-green-600 transition" href="#catalogue">
+     Catalogue
+    </a>
+    <a class="hover:text-green-600 transition" href="#demo">
+     Demo
+    </a>
+    <a class="hover:text-green-600 transition" href="#get-started">
+     Get Started
+    </a>
+   </nav>
+   <!-- Hero Header -->
+   <section aria-label="Hero header" class="flex flex-col-reverse md:flex-row items-center justify-between mb-24 gap-12">
+    <div class="max-w-xl text-center md:text-left space-y-6">
+     <h2 class="text-5xl font-extrabold text-gray-900 select-none neumorph p-6 rounded-3xl shadow-lg">
+      Oasis AI
+     </h2>
+     <p class="text-xl text-gray-600 font-medium leading-relaxed">
+      Your Smart WhatsApp Auto-Reply Assistant
+     </p>
+     <a aria-label="Chat with Oasis AI on WhatsApp" class="inline-block btn-neumorph px-8 py-4 text-green-600 font-bold text-lg shadow-md select-none" href="https://wa.me/916291378773" rel="noopener noreferrer" target="_blank">
+      <i class="fab fa-whatsapp mr-3">
+      </i>
+      Chat on WhatsApp
+     </a>
+    </div>
+    <div class="w-full max-w-md neumorph rounded-3xl p-8 shadow-lg flex justify-center items-center">
+     <img alt="3D style illustration of a futuristic chatbot interface on a smartphone screen with WhatsApp colors and AI elements" class="rounded-2xl" height="320" loading="lazy" src="https://storage.googleapis.com/a1aa/image/61d24085-48cb-4367-d05f-303d267e0117.jpg" width="320"/>
+    </div>
+   </section>
+   <!-- Features Section -->
+   <section class="mb-24" id="features">
+    <h3 class="text-4xl font-extrabold text-center mb-12 select-none neumorph p-6 rounded-3xl shadow-lg max-w-3xl mx-auto">
+     Features
+    </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 max-w-6xl mx-auto" role="list">
+     <article aria-label="Feature: Instant Replies" class="neumorph p-8 rounded-3xl flex flex-col items-center text-center shadow-lg hover:shadow-green-300 transition-shadow cursor-default" role="listitem" tabindex="0">
+      <div class="icon-neumorph mb-6">
+       <i class="fas fa-bolt">
+       </i>
+      </div>
+      <h4 class="text-xl font-semibold mb-2">
+       Instant Replies
+      </h4>
+      <p class="text-gray-600 leading-relaxed">
+       Respond to your customers instantly with AI-powered auto-replies.
+      </p>
+     </article>
+     <article aria-label="Feature: Smart Buttons" class="neumorph p-8 rounded-3xl flex flex-col items-center text-center shadow-lg hover:shadow-green-300 transition-shadow cursor-default" role="listitem" tabindex="0">
+      <div class="icon-neumorph mb-6">
+       <i class="fas fa-mouse-pointer">
+       </i>
+      </div>
+      <h4 class="text-xl font-semibold mb-2">
+       Smart Buttons
+      </h4>
+      <p class="text-gray-600 leading-relaxed">
+       Interactive buttons to guide conversations and boost engagement.
+      </p>
+     </article>
+     <article aria-label="Feature: Free Setup" class="neumorph p-8 rounded-3xl flex flex-col items-center text-center shadow-lg hover:shadow-green-300 transition-shadow cursor-default" role="listitem" tabindex="0">
+      <div class="icon-neumorph mb-6">
+       <i class="fas fa-cogs">
+       </i>
+      </div>
+      <h4 class="text-xl font-semibold mb-2">
+       Free Setup
+      </h4>
+      <p class="text-gray-600 leading-relaxed">
+       Get started quickly with zero setup fees and easy integration.
+      </p>
+     </article>
+     <article aria-label="Feature: Perfect for Small Businesses" class="neumorph p-8 rounded-3xl flex flex-col items-center text-center shadow-lg hover:shadow-green-300 transition-shadow cursor-default" role="listitem" tabindex="0">
+      <div class="icon-neumorph mb-6">
+       <i class="fas fa-store">
+       </i>
+      </div>
+      <h4 class="text-xl font-semibold mb-2">
+       Perfect for Small Businesses
+      </h4>
+      <p class="text-gray-600 leading-relaxed">
+       Tailored solutions to help small businesses grow and engage customers.
+      </p>
+     </article>
+    </div>
+   </section>
+   <!-- Catalogue Section -->
+   <section aria-label="Catalogue of WhatsApp AI assistant services" class="mb-24 max-w-7xl mx-auto" id="catalogue">
+    <h3 class="text-4xl font-extrabold text-center mb-12 select-none neumorph p-6 rounded-3xl shadow-lg max-w-4xl mx-auto">
+     Our Service Catalogue
+    </h3>
+    <p class="text-center text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed px-4">
+     Explore our range of WhatsApp AI assistant services designed to automate your business communication, increase customer satisfaction, and save you time.
+    </p>
+    <div class="catalogue-grid px-4 sm:px-0">
+     <a aria-label="WhatsApp Auto Reply Bot Service" class="catalogue-card" href="https://wa.me/916291378773?text=I%20am%20interested%20in%20WhatsApp%20Auto%20Reply%20Bot%20Service" rel="noopener noreferrer" target="_blank">
+      <img alt="WhatsApp Auto Reply Bot Service showing a smartphone with chat bubbles and AI icons" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/2378e5f7-76a2-4968-0856-41b2119ca6db.jpg" width="600"/>
+      <div class="catalogue-card-content">
+       <h4 class="catalogue-card-title">
+        WhatsApp Auto Reply Bot
+       </h4>
+       <p class="catalogue-card-desc">
+        Automate your WhatsApp replies with smart AI-powered responses that engage your customers instantly.
+       </p>
+       <p class="catalogue-card-price">
+        Starting at Free Setup
+       </p>
+      </div>
+     </a>
+     <a aria-label="WhatsApp Business Integration Service" class="catalogue-card" href="https://wa.me/916291378773?text=I%20am%20interested%20in%20WhatsApp%20Business%20Integration%20Service" rel="noopener noreferrer" target="_blank">
+      <img alt="WhatsApp Business Integration Service showing business icons and WhatsApp logo" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/3f98040d-4d38-47e0-19d6-9df0d7df8d8f.jpg" width="600"/>
+      <div class="catalogue-card-content">
+       <h4 class="catalogue-card-title">
+        WhatsApp Business Integration
+       </h4>
+       <p class="catalogue-card-desc">
+        Seamlessly integrate Oasis AI with your WhatsApp Business account for enhanced automation and analytics.
+       </p>
+       <p class="catalogue-card-price">
+        Custom Pricing Available
+       </p>
+      </div>
+     </a>
+     <a aria-label="Smart Button Chat Flows Service" class="catalogue-card" href="https://wa.me/916291378773?text=I%20am%20interested%20in%20Smart%20Button%20Chat%20Flows%20Service" rel="noopener noreferrer" target="_blank">
+      <img alt="Smart Button Chat Flows Service showing interactive buttons on a chat interface" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/53fbd25d-ad1b-4007-01fe-cf00bc1f3194.jpg" width="600"/>
+      <div class="catalogue-card-content">
+       <h4 class="catalogue-card-title">
+        Smart Button Chat Flows
+       </h4>
+       <p class="catalogue-card-desc">
+        Guide your customers with interactive buttons that simplify navigation and improve engagement.
+       </p>
+       <p class="catalogue-card-price">
+        Included with Setup
+       </p>
+      </div>
+     </a>
+     <a aria-label="Small Business Growth Package" class="catalogue-card" href="https://wa.me/916291378773?text=I%20am%20interested%20in%20Small%20Business%20Growth%20Package" rel="noopener noreferrer" target="_blank">
+      <img alt="Small Business Growth Package showing a small shop with growth chart and WhatsApp icon" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/da2c3cfa-3641-4cfa-e644-372617f19d54.jpg" width="600"/>
+      <div class="catalogue-card-content">
+       <h4 class="catalogue-card-title">
+        Small Business Growth Package
+       </h4>
+       <p class="catalogue-card-desc">
+        Tailored AI solutions to help small businesses automate communication and increase sales.
+       </p>
+       <p class="catalogue-card-price">
+        Affordable Plans
+       </p>
+      </div>
+     </a>
+    </div>
+   </section>
+   <!-- Demo Section -->
+   <section aria-label="Demo section to message the WhatsApp bot and test auto-reply" class="mb-24 max-w-4xl mx-auto neumorph rounded-3xl p-10 shadow-lg flex flex-col md:flex-row items-center gap-10" id="demo">
+    <div class="flex-1 text-center md:text-left space-y-6">
+     <h3 class="text-3xl font-extrabold text-gray-900 select-none">
+      Try Oasis AI Now
+     </h3>
+     <p class="text-gray-600 text-lg leading-relaxed">
+      Message our WhatsApp bot and experience smart auto-replies instantly.
+     </p>
+     <a aria-label="Message Oasis AI WhatsApp bot to test auto-reply" class="btn-neumorph inline-flex items-center justify-center px-8 py-4 text-green-600 font-bold text-lg shadow-md select-none" href="https://wa.me/916291378773?text=Hi%20Oasis%20AI%2C%20I%20want%20to%20test%20your%20auto-reply%20service." rel="noopener noreferrer" target="_blank">
+      <i class="fab fa-whatsapp mr-3">
+      </i>
+      Message the Bot
+     </a>
+    </div>
+    <div class="flex-1 neumorph rounded-3xl p-6 shadow-inner bg-white max-w-md w-full">
+     <img alt="3D style smartphone screen showing a WhatsApp chat conversation with Oasis AI auto-reply messages in green and white bubbles" class="rounded-2xl mx-auto" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/a99e72eb-76f5-416d-10f0-678e8570530f.jpg" width="400"/>
+    </div>
+   </section>
+   <!-- Get Started Section -->
+   <section aria-label="Get started section emphasizing free and fast setup" class="mb-24 neumorph rounded-3xl p-12 shadow-lg max-w-5xl mx-auto text-center" id="get-started">
+    <h3 class="text-4xl font-extrabold mb-6 select-none">
+     Get Started for Free
+    </h3>
+    <p class="text-gray-600 text-lg max-w-3xl mx-auto mb-10 leading-relaxed">
+     Setting up Oasis AI is fast, easy, and completely free. Start automating your WhatsApp replies today and watch your customer engagement grow.
+    </p>
+    <a aria-label="Get started with Oasis AI WhatsApp assistant" class="btn-neumorph inline-block px-12 py-5 text-green-600 font-extrabold text-xl shadow-md select-none" href="https://wa.me/916291378773" rel="noopener noreferrer" target="_blank">
+     <i class="fab fa-whatsapp mr-4">
+     </i>
+     Get Started Now
+    </a>
+   </section>
+   <!-- Footer -->
+   <footer class="mt-auto py-8 text-center text-gray-500 select-none">
+    © 2024 Oasis AI. All rights reserved.
+   </footer>
+  </div>
+  <script>
+   // Mobile menu toggle
+    const btn = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+
+    btn.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+    });
+  </script>
+ </body>
+</html>
